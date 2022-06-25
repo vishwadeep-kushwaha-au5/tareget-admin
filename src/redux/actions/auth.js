@@ -22,7 +22,7 @@ export const register = (data) => async (dispatch, getState) => {
 
 export const login = (data) => async (dispatch, getState) => {
     dispatch(isLoading())
-    axios.post('/api/user/login', data).then(res => {
+    axios.post(process.env.REACT_APP_USER_LOGIN, data).then(res => {
         dispatch(success())
         dispatch({
             type: SETH_AUTH,

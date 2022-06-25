@@ -21,7 +21,7 @@ class UploadImage extends Component{
            // getSignature is calling an API, passing the params_to_sign           
            // in the request body 
            // and returns the signature
-            const signature = await axios.post('/api/image/generateCloudinarySignature', params_to_sign);
+            const signature = await .post('/api/image/generateCloudinarySignature', params_to_sign);
             callback(signature.data.result);
         } catch (err) {
             console.log(err);
