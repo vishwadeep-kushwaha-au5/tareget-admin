@@ -15,6 +15,7 @@ import { getAvailableDrivers, updateDriver } from '../../redux/actions/driver';
 import { getAvailableVehicles, updateVehicle } from '../../redux/actions/vehicle';
 import { updateOrder, updateOrderField, updateVehicleModel, setSelectedVehicle } from '../../redux/actions/deliveryOrder';
 import { restructureDriverForCommonDataGrid, restructureVehicleForCommonDataGrid } from '../../utils/helper';
+import VehicleModels from '../../public/vehicleModel';
 
 import DataGrid from 'react-data-grid';
 
@@ -69,7 +70,11 @@ const driverColumns = (handleSelection) => [
         }
     },
     { key: 'name', name: 'Name', width: 120, resizable: true, frozen: true },
-    { key: 'vehicleModelId', name: 'Vehicle Model', width: 120, resizable: true },
+    { key: 'vehicleModelId', name: 'Vehicle Model', width: 120, resizable: true,
+        formatter(props){
+          return <>{(props.row.vehicleModelId && VehicleModels[props.row.vehicleModelId]) ? VehicleModels[props.row.vehicleModelId].modelName : 'NA'}</>
+        }
+    },
     { key: 'vehicleNumber', name: 'Vehicle Registration Number', width: 120, resizable: true },
     { key: 'address', name: 'Address', width: 120, resizable: true },
     { key: 'licenseNumber', name: 'License Number', width: 120, resizable: true },
