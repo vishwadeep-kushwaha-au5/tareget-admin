@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAvailableDrivers, updateDriver } from '../../redux/actions/driver';
 import { getAvailableVehicles, updateVehicle } from '../../redux/actions/vehicle';
-import { updateOrder, updateOrderField, updateVehicleModel, setSelectedVehicle } from '../../redux/actions/deliveryOrder';
+import { updateOrderDriver, updateOrderField, updateVehicleModel, setSelectedVehicle } from '../../redux/actions/deliveryOrder';
 import { restructureDriverForCommonDataGrid, restructureVehicleForCommonDataGrid } from '../../utils/helper';
 import VehicleModels from '../../public/vehicleModel';
 
@@ -85,7 +85,7 @@ const vehicleColumns = (handleSelection) => [
   { key: 'id', name: 'ID', width: 120, resizable: true, sortable: true, frozen: true },
   { key: 'select', name: 'Select', width: 120, resizable: true, sortable: true, frozen: true, 
       formatter(props){
-          return <Button variant="contained" onClick={()=>handleSelection(props.row.id)}>Select</Button>
+          return <Button variant="contained" onClick={()=>handleSelection(props.row)}>Select</Button>
       }
   },
   { key: 'name', name: 'Name', width: 120, resizable: true, frozen: true },
@@ -144,18 +144,21 @@ export default function SelectionDialog(props) {
   },[availableDrivers, availableVehicles])
 
   const handleSelection = (vehicle) => {
-    let id = vehicle.currentDriverId
+    let id;
     let vehicleModelId = vehicle.vehicleModelId
     switch(props.listKey){
         case "driver":
-            dispatch(updateOrder({id: props.parentId, deliveryPartnerId: id}))
+            id = vehicle.currentDriverId
+            dispatch(updateOrderDriver({id: props.parentId, deliveryPartnerId: id}))
             dispatch(updateDriver({id: id, currentOrderId: props.parentId}))
             return
         case "vehicle":
+            id = vehicle.id
             dispatch(updateDriver({id: props.parentId, currentVehicleId: id}))
             dispatch(updateVehicle({id: id, currentDriverId: props.parentId}))
             return
         default:
+            id = vehicle.currentDriverId
             dispatch(updateOrderField("deliveryPartnerId",{...deliveryOrderState["deliveryPartnerId"], value: id}))
             dispatch(updateVehicleModel(vehicleModelId))
             dispatch(setSelectedVehicle(vehicle))

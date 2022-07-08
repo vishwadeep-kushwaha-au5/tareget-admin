@@ -15,9 +15,10 @@ const columns = (openSelectionDialog: any, setListKey :any, setParentId :any) =>
     { key: 'originAddress', name: 'From', width: 120, resizable: true },
     { key: 'destinationAddress', name: 'To', width: 120, resizable: true },
     { key: 'customerPhoneNumber', name: 'Phone number', width: 120, resizable: true },
-    { key: 'destionationPhoneNumber', name: 'Destionation Contact', width: 120, resizable: true },
+    { key: 'destinationPhoneNumber', name: 'destination Contact', width: 120, resizable: true },
     { key: 'distance', name: 'Distance', width: 120, resizable: true },
-    { key: 'billingDetails', name: 'Base Charge', width: 120, resizable: true },
+    { key: 'charge', name: 'Charge', width: 120, resizable: true },
+    { key: 'paymenyDone', name: 'Paid', width: 120, resizable: true },
     { key: 'timerW', name: 'Timer W.', width: 120, resizable: true },
     { key: 'orderStatus', name: 'Order Status', width: 120, resizable: true },
     { key: 'deliveryPartnerId', name: 'Delivery Partner', width: 120, resizable: true,
@@ -27,21 +28,25 @@ const columns = (openSelectionDialog: any, setListKey :any, setParentId :any) =>
     },
     { key: 'deliveryStartTime', name: 'Start Time', width: 120, resizable: true,
       formatter(props: any){
-        return <>{moment(props.row.deliveryStartTime).format('Do MMM')}</>
+        return <>{moment(props.row.deliveryStartTime).format('LLLL')}</>
       }
     },
     { key: 'loadEndTime', name: 'Loading End Time', width: 120, resizable: true ,
     formatter(props: any){
-      return <>{moment(props.row.loadEndTime).format('Do MMM')}</>
+      return <>{moment(props.row.loadEndTime).format('LLLL')}</>
     }},
     { key: 'unloadStartTime', name: 'Unloading Start Time', width: 120, resizable: true ,
     formatter(props: any){
-      return <>{moment(props.row.unloadStartTime).format('Do MMM')}</>
+      return <>{moment(props.row.unloadStartTime).format('LLLL')}</>
     }},
     { key: 'deliveryEndTime', name: 'Delivery Start Time', width: 120, resizable: true,
     formatter(props: any){
-      return <>{moment(props.row.deliveryEndTime).format('Do MMM')}</>
-    } }
+      return <>{moment(props.row.deliveryEndTime).format('LLLL')}</>
+    } },
+    { key: 'extraDiscount', name: 'Extra Discount', width: 120, resizable: true },
+    { key: 'promoDiscount', name: 'Promo Discount', width: 120, resizable: true },
+    { key: 'referencePhoneNumber', name: 'Reference', width: 120, resizable: true },
+
   ];
   
 function rowKeyGetter(row: OrderRow) {

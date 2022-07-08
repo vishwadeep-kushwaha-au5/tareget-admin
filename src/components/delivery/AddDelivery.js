@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Grid, TextField, Typography, Button} from '@material-ui/core'
+import {Grid, TextField, Typography, Button, FormControl, FormControlLabel, Checkbox, FormHelperText, Divider} from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -62,31 +62,43 @@ const AddDelivery = (props)=>{
             && Object.keys(vehicleModel).length !== 0
             && Object.getPrototypeOf(vehicleModel) === Object.prototype) mileage = vehicleModel.mileage
             let chargeMultiplier = mileage/22
-            dispatch(updateOrderField("billingDetails", {...deliveryOrderState[input.target.name], value :{baseCharge: baseChargeCalculate(input.target?.value?.distance.text, chargeMultiplier)} }))
+            dispatch(updateOrderField("baseCharge", {...deliveryOrderState["baseCharge"], value :baseChargeCalculate(input.target?.value?.distance.text, chargeMultiplier)}))
+            dispatch(updateOrderField("promoDiscount", {...deliveryOrderState["promoDiscount"], value :0 }))
+        }
+    }
+    
+    const handlePromoChange = () =>{
+        let baseCharge = deliveryOrderState?.baseCharge?.value
+        let newPromoDiscount = deliveryOrderState?.promoDiscount
+        if(deliveryOrderState?.promoDiscount.value)
+            dispatch(updateOrderField("promoDiscount", {...deliveryOrderState["promoDiscount"], value :0 }))
+        else if(baseCharge){
+            //apply 50% discount
+            let discount = baseCharge/2<500?baseCharge:500
+            newPromoDiscount.value = discount
+            dispatch(updateOrderField("promoDiscount", {...deliveryOrderState["promoDiscount"], value :discount }))
         }
     }
 
     useEffect(()=>{
-        if(deliveryOrderState.billingDetails.value){
-            console.log('hehe')
+        if(deliveryOrderState.baseCharge.value){
             let mileage = 22;
             if(vehicleModel // 👈 null and undefined check
             && Object.keys(vehicleModel).length !== 0
             && Object.getPrototypeOf(vehicleModel) === Object.prototype) mileage = vehicleModel.mileage
             let chargeMultiplier = mileage/22
-            dispatch(updateOrderField("billingDetails", {...deliveryOrderState["billingDetails"], value :{baseCharge: deliveryOrderState["billingDetails"]?.value?.baseCharge/chargeMultiplier} }))
+            dispatch(updateOrderField("baseCharge", {...deliveryOrderState["baseCharge"], value :deliveryOrderState["baseCharge"]?.value/chargeMultiplier }))
         }
     },[vehicleModel])
 
     const onSubmit = () => {
         //Todo: Fix 
         setShowError(true)
-        let newdeliveryOrderState = (({customerName, originAddress, destinationAddress, customerPhoneNumber, destionationPhoneNumber, distance, billingDetails, timerW, deliveryPartnerId, orderStatus})=> ({customerName, originAddress, destinationAddress, customerPhoneNumber, destionationPhoneNumber, distance, billingDetails, timerW, deliveryPartnerId, orderStatus}))(deliveryOrderState);
-        dispatch(submitOrder(newdeliveryOrderState))
+        let newdeliveryOrderState = (({customerName, originAddress, destinationAddress, customerPhoneNumber, destinationPhoneNumber, distance, timerW, deliveryPartnerId, orderStatus})=> ({customerName, originAddress, destinationAddress, customerPhoneNumber, destinationPhoneNumber, distance, timerW, deliveryPartnerId, orderStatus}))(deliveryOrderState);
+        let newBillingState = (({promoDiscount, extraDiscount,baseCharge})=> ({promoDiscount, extraDiscount,baseCharge}))(deliveryOrderState);
+        let newReferenceState = (({referencePhoneNumber})=> ({referencePhoneNumber}))(deliveryOrderState);
+        dispatch(submitOrder({order: newdeliveryOrderState, billing: newBillingState, reference: newReferenceState}))
     }
-
-    
-    
     //Form step 1 functions below
     
     const handleFormStepOneInputChange = (input) => {
@@ -100,6 +112,7 @@ const AddDelivery = (props)=>{
         }
     }
 
+
     useEffect(()=>{dispatch(unsetMapLoaded())},[])
     
     return(
@@ -108,7 +121,7 @@ const AddDelivery = (props)=>{
                 formStep === 1 ?    
                 <Grid item container xs={12}>
                     <Grid item xs={12}>
-                        <TextField fullWidth label="Customer Phone number" variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={<>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
+                        <TextField fullWidth label="Customer Phone number" variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
                     </Grid>
                     <Grid item xs={12}>
                         <Button variant="outlined" onClick={handleFormStepOneSubmit}>Submit</Button>
@@ -121,31 +134,71 @@ const AddDelivery = (props)=>{
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <TextField label="Name" variant="outlined" size="small" onChange={handleInputChange} name="customerName" value={deliveryOrderState.customerName.value} error={showError && deliveryOrderState.customerName.validation} helperText={<>{deliveryOrderState.customerName.validation}</>}/>
+                <TextField label="Name" variant="outlined" size="small" onChange={handleInputChange} name="customerName" value={deliveryOrderState.customerName.value} error={showError && deliveryOrderState.customerName.validation} helperText={showError && <>{deliveryOrderState.customerName.validation}</>}/>
             </Grid>
             <Grid item container xs={12} justifyContent="space-between">
                 <Grid item xs={5}>
-                    {mapLoaded ?<Search handleInputChange={handlePlaceChange} address={value.originAddress} name="originAddress"  error={showError && deliveryOrderState.originAddress.validation} helperText={<>{deliveryOrderState.originAddress.validation}</>}/> : <div>Loading</div>}
+                    {mapLoaded ?<Search handleInputChange={handlePlaceChange} address={value.originAddress} name="originAddress"  error={showError && deliveryOrderState.originAddress.validation} helperText={showError && <>{deliveryOrderState.originAddress.validation}</>}/> : <div>Loading</div>}
                 </Grid>
                 <Grid item xs={5}>
-                    {mapLoaded ?<Search handleInputChange={handlePlaceChange} address={value.destinationAddress} name="destinationAddress"  error={showError && deliveryOrderState.destinationAddress.validation} helperText={<>{deliveryOrderState.destinationAddress.validation}</>}/> : <div>Loading</div>}                
+                    {mapLoaded ?<Search handleInputChange={handlePlaceChange} address={value.destinationAddress} name="destinationAddress"  error={showError && deliveryOrderState.destinationAddress.validation} helperText={showError && <>{deliveryOrderState.destinationAddress.validation}</>}/> : <div>Loading</div>}                
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <TextField fullWidth label="Customer Phone number" variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={<>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
+                <TextField label="Customer Phone number" variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
             </Grid>
             <Grid item xs={12}>
-                <TextField fullWidth label="Destination Phone number" variant="outlined" size="small" onChange={handleInputChange} name="destionationPhoneNumber" value={deliveryOrderState.destionationPhoneNumber.value}  error={showError && deliveryOrderState.destionationPhoneNumber.validation} helperText={<>{deliveryOrderState.destionationPhoneNumber.validation}</>}/>
+                <TextField label="Destination Phone number" variant="outlined" size="small" onChange={handleInputChange} name="destinationPhoneNumber" value={deliveryOrderState.destinationPhoneNumber.value}  error={showError && deliveryOrderState.destinationPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.destinationPhoneNumber.validation}</>}/>
             </Grid>
             <Grid item xs={12}>
-                <TextField fullWidth label="Timer W" type='number' variant="outlined" size="small" onChange={handleInputChange} name="timerW" value={deliveryOrderState.timerW.value.toString()}  error={showError && deliveryOrderState.timerW.validation} helperText={<>{deliveryOrderState.timerW.validation}</>}/>
+                <TextField label="Timer W" type='number' variant="outlined" size="small" onChange={handleInputChange} name="timerW" value={deliveryOrderState.timerW.value.toString()}  error={showError && deliveryOrderState.timerW.validation} helperText={showError && <>{deliveryOrderState.timerW.validation}</>}/>
             </Grid>
             <Grid container item xs={12}>
                 <Grid item>
-                    <Button onClick={()=> {props.setSelectionDialogOpen(true); setListKey("default");}}>Add driver</Button>
+                    <Button variant="contained" onClick={()=> {props.setSelectionDialogOpen(true); setListKey("default");}}>Add driver</Button>
                 </Grid>
                 <Grid item>
                     Selected Driver: <b>{selectedVehicle?.driverName}</b>
+                </Grid>
+            </Grid>
+            
+            {/* BILLING FIELDS BELOW */}
+            <Grid item xs={12}>
+                <Divider/>
+            </Grid>
+            <Grid item xs={12}>
+                <Typography variant="h4">Billing Details</Typography>
+            </Grid>
+            
+            <Grid container item xs={12} md={6} spacing={2}>
+                <Grid item xs={12}>
+                    <FormControl>
+                        <FormControlLabel
+                            control={<Checkbox checked={deliveryOrderState.promoDiscount.value} onChange={handlePromoChange} name="Promo Discount" />}
+                            label="Promo Discount"
+                        />
+                        {showError && <FormHelperText>{deliveryOrderState.promoDiscount.validation}</FormHelperText>}
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField label="Extra Discount" type='number' variant="outlined" size="small" onChange={handleInputChange} name="extraDiscount" value={deliveryOrderState.extraDiscount.value.toString()}  error={showError && deliveryOrderState.extraDiscount.validation} helperText={showError && <>{deliveryOrderState.extraDiscount.validation}</>}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField label="Reference Phone Number" variant="outlined" size="small" onChange={handleInputChange} name="referencePhoneNumber" value={deliveryOrderState.referencePhoneNumber.value.toString()}  error={showError && deliveryOrderState.referencePhoneNumber.validation} helperText={showError && <>{deliveryOrderState.referencePhoneNumber.validation}</>}/>
+                </Grid> 
+            </Grid>
+            <Grid container item xs={12} md={6}>
+                <Grid container item xs={12}>
+                    <Grid item>Promo Discount:</Grid>
+                    <Grid item>{deliveryOrderState.promoDiscount.value || 0}</Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid item>Extra Discount:</Grid>
+                    <Grid item>{deliveryOrderState.extraDiscount.value || 0}</Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid item>Net Charge:</Grid>
+                    <Grid item>{deliveryOrderState.baseCharge.value-(deliveryOrderState.extraDiscount.value || 0)-(deliveryOrderState.promoDiscount.value || 0)}</Grid>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -154,7 +207,7 @@ const AddDelivery = (props)=>{
             <CheckSpinner success={submitOrderFlag}/>)}
             <Grid item xs={12}>
                 Distance: {deliveryOrderState?.distance?.value?.distance?.text}
-                Base Charge: {deliveryOrderState?.billingDetails?.value?.baseCharge}
+                Base Charge: {deliveryOrderState?.baseCharge?.value}
             </Grid>
             {formStep === 2 ?<GooglePlannerMap markers={value} mapValue={mapLoaded} selectedMarker={selectedMarker} dimensions={{ width: "100%", height: "500px" }} updateDistanceDetails={handleInputChange}></GooglePlannerMap>:<></>}
         </Grid>

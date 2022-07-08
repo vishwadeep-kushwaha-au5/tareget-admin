@@ -9,7 +9,7 @@ const Dashboard = () => {
 
     // useEffect(()=>{
     //     console.log('fu')
-    //     axios.post("http://localhost:3080/api/driver/getDriverCurr", {driverId: '62acba7b0944bafd82796366'}).then(locs=>{
+    //     api.post("http://localhost:3080/api/driver/getDriverCurr", {driverId: '62acba7b0944bafd82796366'}).then(locs=>{
     //         let x = {}
     //         console.log("ll",locs)
     //         x = Object.assign({}, locs?.data?.result);

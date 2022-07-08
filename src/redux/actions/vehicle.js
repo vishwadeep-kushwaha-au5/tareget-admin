@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '../../utils/api'
 import { validateFields } from '../../utils/validator'
 import { getKeyValueObjectFromReduxObject } from '../../utils/helper'
 
@@ -46,7 +46,7 @@ export const submitVehicle = (data) => (dispatch, getState) =>{
     dispatch({type: SET_SUBMIT_VEHICLE_FLAG, payload: 'submitting'})
     console.log(data);
     if(Object.values(data).every(curr => curr.validation === false )){
-        axios.post(process.env.REACT_APP_NEW_VEHICLE,getKeyValueObjectFromReduxObject(data)).then(res=>{
+        api.post(process.env.REACT_APP_NEW_VEHICLE,getKeyValueObjectFromReduxObject(data)).then(res=>{
             dispatch({type: SET_SUBMIT_VEHICLE_FLAG, payload: 'Done'})
             console.log("Done")
         }).catch(err=>{
@@ -63,7 +63,7 @@ export const updateVehicle = (data) => (dispatch, getState) => {
     if(data // 👈 null and undefined check
     && Object.keys(data).length !== 0
     && Object.getPrototypeOf(data) === Object.prototype){
-        axios.put(process.env.REACT_APP_UPDATE_VEHICLE, data).then(res=>{
+        api.put(process.env.REACT_APP_UPDATE_VEHICLE, data).then(res=>{
             console.log("Done")
         }).catch(err=>{
             console.log("err", err)
@@ -74,7 +74,7 @@ export const updateVehicle = (data) => (dispatch, getState) => {
 }
 
 export const getAvailableVehicles = () => (dispatch, getstate) => {
-    axios.get(process.env.REACT_APP_GET_AVAILABLE_VEHICLES).then(res=>{
+    api.get(process.env.REACT_APP_GET_AVAILABLE_VEHICLES).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
             dispatch({
                 type: SET_VEHICLE_LIST,
@@ -88,7 +88,7 @@ export const getAvailableVehicles = () => (dispatch, getstate) => {
 }
 
 export const getAllVehicle = () => (dispatch, getstate) => {
-    axios.get(process.env.REACT_APP_GET_ALL_VEHICLES).then(res=>{
+    api.get(process.env.REACT_APP_GET_ALL_VEHICLES).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
             dispatch({
                 type: SET_VEHICLE_LIST,
@@ -102,7 +102,7 @@ export const getAllVehicle = () => (dispatch, getstate) => {
 }
 
 export const getVehicle = (vehicleId) => (dispatch, getState) => {
-    axios.get(process.env.REACT_APP_GET_VEHICLE+'/'+vehicleId).then(res=>{
+    api.get(process.env.REACT_APP_GET_VEHICLE+'/'+vehicleId).then(res=>{
         console.log(res)
     }).then(err=>{
         console.log(err)

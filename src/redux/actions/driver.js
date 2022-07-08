@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '../../utils/api'
 import { validateFields } from '../../utils/validator'
 import { getKeyValueObjectFromReduxObject } from '../../utils/helper'
 
@@ -47,7 +47,7 @@ export const updateDriverField = (inputName, input) => (dispatch, getState) => {
 export const submitDriver = (data) => (dispatch, getState) => {
     dispatch({type: SET_SUBMIT_DRIVER_FLAG, payload: 'submitting'})
     if(Object.values(data).every(curr => curr.validation === false )){
-        axios.post(process.env.REACT_APP_NEW_DRIVER,getKeyValueObjectFromReduxObject(data)).then(res=>{
+        api.post(process.env.REACT_APP_NEW_DRIVER,getKeyValueObjectFromReduxObject(data)).then(res=>{
             dispatch({type: SET_SUBMIT_DRIVER_FLAG, payload: 'Done'})
             console.log("Done")
         }).catch(err=>{
@@ -64,7 +64,7 @@ export const updateDriver = (data) => (dispatch, getState) => {
     if(data // 👈 null and undefined check
     && Object.keys(data).length !== 0
     && Object.getPrototypeOf(data) === Object.prototype){
-        axios.put(process.env.REACT_APP_UPDATE_DRIVER, data).then(res=>{
+        api.put(process.env.REACT_APP_UPDATE_DRIVER, data).then(res=>{
             console.log("Done")
         }).catch(err=>{
             console.log("err", err)
@@ -75,7 +75,7 @@ export const updateDriver = (data) => (dispatch, getState) => {
 }
 
 export const getAvailableDrivers = () => (dispatch, getstate) => {
-    axios.get(process.env.REACT_APP_GET_AVAILABLE_DRIVERS).then(res=>{
+    api.get(process.env.REACT_APP_GET_AVAILABLE_DRIVERS).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
             dispatch({
                 type: SET_DRIVER_LIST,
@@ -89,7 +89,7 @@ export const getAvailableDrivers = () => (dispatch, getstate) => {
 }
 
 export const getAllDrivers = () => (dispatch, getstate) => {
-    axios.get(process.env.REACT_APP_GET_ALL_DRIVERS).then(res=>{
+    api.get(process.env.REACT_APP_GET_ALL_DRIVERS).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
             dispatch({
                 type: SET_DRIVER_LIST,
@@ -103,7 +103,7 @@ export const getAllDrivers = () => (dispatch, getstate) => {
 }
 
 export const getDriver = (orderId) => (dispatch, getState) => {
-    axios.get(process.env.REACT_APP_GET_DRIVER+'/'+orderId).then(res=>{
+    api.get(process.env.REACT_APP_GET_DRIVER+'/'+orderId).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
             console.log("fine")
             dispatch({

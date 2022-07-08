@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../utils/api';
 import { isLoading, success, error } from './status';
 
 export const SETH_AUTH = "SETH_AUTH"
@@ -6,7 +6,7 @@ export const REMOVE_AUTH = "REMOVE_AUTH"
 
 export const register = (data) => async (dispatch, getState) => {
     dispatch(isLoading())
-    axios.post('/api/user/signup', data).then(res => {
+    api.post('/api/user/signup', data).then(res => {
         dispatch(success())
         dispatch({
             type: SETH_AUTH,
@@ -22,7 +22,7 @@ export const register = (data) => async (dispatch, getState) => {
 
 export const login = (data) => async (dispatch, getState) => {
     dispatch(isLoading())
-    axios.post(process.env.REACT_APP_USER_LOGIN, data).then(res => {
+    api.post(process.env.REACT_APP_USER_LOGIN, data).then(res => {
         dispatch(success())
         dispatch({
             type: SETH_AUTH,

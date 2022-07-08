@@ -26,7 +26,7 @@ const INITIAL_STATE = {
             validation: true,
             required: true
         },
-        destionationPhoneNumber: {
+        destinationPhoneNumber: {
             value: '', 
             validationType: "validatePhoneNumber",
             validation: true,
@@ -38,11 +38,47 @@ const INITIAL_STATE = {
             validation: true,
             required: true
         },
-        billingDetails: {
+        baseCharge: {
             value: '', 
-            validationType: "validateDateTime",
+            validationType: "validateNumber",
             validation: true,
             required: true
+        },
+        extraDiscount: {
+            value: '',
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },    
+        promoDiscount: {
+            value: '',
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },    
+        tollTax: {
+            value: '',
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },    
+        roadTax: {
+            value: '',
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },    
+        additional: {
+            value: '',
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },
+        referencePhoneNumber: {
+            value: '',
+            validationType: "validatePhoneNumber",
+            validation: true,
+            required: false
         },
         timerW: {
             value: '',

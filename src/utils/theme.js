@@ -97,7 +97,6 @@ export const theme = createMuiTheme({
         MuiButton: {
             root: {
                 backgroundImage: `linear-gradient(to left, ${color.primaryDark} , ${color.primaryLight})`,
-                height: '40px',
                 textTransform: 'none',
                 fontWeight: '700',
                 color: color.white,
@@ -167,6 +166,7 @@ export const theme = createMuiTheme({
         MuiTypography: {
             colorTextPrimary: { color: color.textPrimary },
             colorTextSecondary: { color: color.textSecondary },
+            colorPrimary: {color:color.primaryDark}
         },
         MuiFormControlLabel: {
             label: {
@@ -179,10 +179,37 @@ export const theme = createMuiTheme({
                 fontSize: 12,
                 fontWeight: 600
             }
+        },
+        MuiAvatar: {
+            root:{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: "0",
+                fontFamily: "Roboto, sans-serif",
+                lineHeight: "1",
+                userSelect: "none",
+                cursor: "pointer",
+                borderRadius: "8px",
+                width: "34px",
+                height: "34px",
+                fontSize: "1.2rem",
+                overflow: "hidden",
+                transition: "all 0.2s ease-in-out 0s",
+            },
+            colorDefault:{
+                backgroundColor: "#ede7f6",
+                color: "#5e35b1",
+                '&:hover':{
+                    color: "#ede7f6",
+                    backgroundColor: "#5e35b1",
+                }
+            }
         }
     },
     typography: {
-        fontFamily: '"Nunito sans","Raleway", sans-serif',
+        fontFamily: '"Montserrat","Raleway", sans-serif',
         h1: {
             fontSize: '36px',
             fontWeight: 800
@@ -197,7 +224,8 @@ export const theme = createMuiTheme({
         },
         h4: {
             fontSize: '18px',
-            fontWeight: 700
+            fontWeight: 600,
+            lineHeight: 2
         },
         h5: {
             fontSize: '18px',
@@ -210,12 +238,14 @@ export const theme = createMuiTheme({
         subtitle1: {
             fontSize: 12,
             fontWeight: 500,
-            opacity: '90%'
+            opacity: '90%',
+            lineHeight: 2
         },
         subtitle2: {
-            fontSize: '14px',
-            fontWeight: 600,
-            opacity: '80%'
+            fontSize: '12px',
+            fontWeight: 500,
+            opacity: '90%',
+            lineHeight: 1.6
         },
     },
     palette: {

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '../../utils/api';
 import { validateFields } from '../../utils/validator'
 import { getKeyValueObjectFromReduxObject } from '../../utils/helper'
 import VehicleModels from '../../public/vehicleModel';
@@ -15,7 +15,7 @@ export const UPDATE_NUMBER_OF_ORDER_BY_USER = "UPDATE_NUMBER_OF_ORDER_BY_USER"
 
 
 export const updateOrderField = (inputName, input) => (dispatch, getState) => {
-    console.log(inputName, input)
+    console.log(input)
     let validationType = input.validationType
     if(input.required && Object.getPrototypeOf(input) !== Object.prototype){
         //check if empty
@@ -27,7 +27,6 @@ export const updateOrderField = (inputName, input) => (dispatch, getState) => {
         //validate field
         input["validation"] = window["validateFields"][validationType](input.value);
     }
-    console.log(input["validation"])
     if(!input["validation"]){
         dispatch({
             type: UPDATE_ORDER_FIELD,
@@ -47,11 +46,18 @@ export const updateOrderField = (inputName, input) => (dispatch, getState) => {
     // })
 }
 
-export const submitOrder = (data) => (dispatch, getState) => {
+export const submitOrder = (order) => (dispatch, getState) => {
     dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: 'Submitting'})
-    if(Object.values(data).every(curr => curr.validation === false )){
-        axios.post(process.env.REACT_APP_NEW_ORDER,getKeyValueObjectFromReduxObject(data)).then(res=>{
-            axios.put(process.env.REACT_APP_UPDATE_DRIVER, {id: res?.data?.result?.deliveryPartnerId, currentOrderId: res?.data?.result?._id}).then(res=>{
+    let spreadOrder = []
+    Object.values(order).forEach(value=>spreadOrder = [...spreadOrder,...(Object.values(value))])
+
+    if(Object.values(spreadOrder).every(curr => curr.validation === false )){
+        order.order = getKeyValueObjectFromReduxObject(order.order) 
+        order.billing = getKeyValueObjectFromReduxObject(order.billing) 
+        order.reference = getKeyValueObjectFromReduxObject(order.reference) 
+
+        api.post(process.env.REACT_APP_NEW_ORDER,order).then(res=>{
+            api.put(process.env.REACT_APP_UPDATE_DRIVER, {id: res?.data?.result?.deliveryPartnerId, currentOrderId: res?.data?.result?._id}).then(res=>{
                 dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: 'Done'})
             }).catch(err=>{
                 dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: false})
@@ -63,15 +69,40 @@ export const submitOrder = (data) => (dispatch, getState) => {
         })
     }else{
         dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: false})
-        console.log("Validation false")
     }
 }
 
-export const updateOrder = (data) => (dispatch, getState) => {
+export const updateOrder = (orderPart, data, orderId) => async (dispatch, getState) => {
+    dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: 'Submitting'})
+
+    if(Object.values(data).every(curr => curr.validation === false )){
+        console.log(data, orderId)
+        data = getKeyValueObjectFromReduxObject(data)
+        data = {orderId: orderId, ...data}
+
+        api.put(process.env.REACT_APP_UPDATE_ORDER,{[orderPart]: data}).then(res=>{
+            let order = getState().deliveryOrder.order
+            console.log(res)
+            order = {...order,...res.data.result}
+            dispatch({
+                type: SET_ORDER,
+                payload: order
+            })
+            return true
+        }).catch(err=>{
+            dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: false})
+            console.log("err", err)
+        })
+    }else{
+        dispatch({type: SET_SUBMIT_ORDER_FLAG, payload: false})
+    }
+}
+
+export const updateOrderDriver = (data) => (dispatch, getState) => {
     if(data // 👈 null and undefined check
     && Object.keys(data).length !== 0
     && Object.getPrototypeOf(data) === Object.prototype){
-        axios.put(process.env.REACT_APP_UPDATE_ORDER, data).then(res=>{
+        api.put(process.env.REACT_APP_UPDATE_ORDER_DRIVER, data).then(res=>{
             console.log("Done")
         }).catch(err=>{
             console.log("err", err)
@@ -96,9 +127,8 @@ export const setSelectedVehicle = (vehicle) => (dispatch, getState) =>{
 }
 
 export const getAllOrders = (pageNumber = 0) => (dispatch, getState) => {
-    axios.get(process.env.REACT_APP_GET_ALL_ORDERS+'/'+pageNumber).then(res=>{
+    api.get(process.env.REACT_APP_GET_ALL_ORDERS+'/'+pageNumber).then(res=>{
         if(res.statusText === 'OK' && res.data.result?.length){
-            console.log("fine")
             dispatch({
                 type: SET_ORDER_LIST,
                 payload: res.data.result
@@ -111,11 +141,11 @@ export const getAllOrders = (pageNumber = 0) => (dispatch, getState) => {
 }
 
 export const getOrder = (orderId) => (dispatch, getState) => {
-    axios.get(process.env.REACT_APP_GET_ORDER+'/'+orderId).then(res=>{
-        if(res.statusText === 'OK' && res.data.result?.length){
+    api.get(process.env.REACT_APP_GET_ORDER+'/'+orderId).then(res=>{
+        if(res.statusText === 'OK' && res.data.result){
             dispatch({
                 type: SET_ORDER,
-                payload: res.data.result[0]
+                payload: res.data.result
             })
         }
     }).catch(err=>{
@@ -125,14 +155,13 @@ export const getOrder = (orderId) => (dispatch, getState) => {
 
 export const fetchUserDetailsByPhone = (userPhoneNumber) => (dispatch, getState) =>{
     if(userPhoneNumber){
-        axios.get(process.env.REACT_APP_GET_USER+'/'+userPhoneNumber).then(res=>{
+        api.get(process.env.REACT_APP_GET_USER+'/'+userPhoneNumber).then(res=>{
             if(res.statusText === 'OK'){
                 let newOrderForm = getState().deliveryOrder.orderForm
                 let user = res.data?.result?.order
-                console.log(user)
 
                 newOrderForm.customerName.value = user.customerName
-                console.log(res)
+                newOrderForm.customerName.validation = false
                 dispatch({
                     type: UPDATE_ORDER_FIELD,
                     inputName: 'customerName',

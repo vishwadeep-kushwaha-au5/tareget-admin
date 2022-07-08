@@ -61,7 +61,7 @@ export const getKeyValueObjectFromReduxObject = (reduxObj) =>{
 
 export const restructureOrderForDataGrid = (order) => {
     return {
-        billingDetails: order.billingDetails.baseCharge,
+        charge: order.baseCharge - order.promoDiscount - order.extraDiscount,
         customerName: order.customerName,
         customerPhoneNumber: order.customerPhoneNumber,
         date: order.date,
@@ -69,13 +69,16 @@ export const restructureOrderForDataGrid = (order) => {
         deliveryPartnerId: order.deliveryPartnerId,
         deliveryStartTime: order.deliveryStartTime,
         destinationAddress: order.destinationAddress.placeName,
-        destionationPhoneNumber: order.destionationPhoneNumber,
+        destinationPhoneNumber: order.destinationPhoneNumber,
         distance: order.distance.distance.text,
         loadEndTime: order.loadEndTime,
         orderStatus: order.orderStatus,
         originAddress: order.originAddress.placeName,
         timerW: order.timerW,
         unloadStartTime: order.unloadStartTime,
+        extraDiscount: order.extraDiscount,
+        promoDiscount: order.promoDiscount,
+        referencePhoneNumber: order.referencePhoneNumber,
         id: order._id 
     }
 }
@@ -112,4 +115,59 @@ export const restructureVehicleForCommonDataGrid = (vehicle)=>{
         address: "NA",
         licenseNumber: "NA"
     }
+}
+
+export const orderStatusToText = (orderStatus) =>{ 
+    switch(orderStatus){
+      case '1':
+        return "Order placed";
+        break;
+      case '2':
+        return "Vehicle reached at pickup point";
+        break;
+      case '3':
+        return "Vehicle Left Pickup Point";
+        break;
+      case '4':
+        return "Vehicle reached at destination point";
+        break;
+      case '5':
+        return "Oehicle left at destination point";
+        break;
+      default:
+        break;
+    }
+  }
+  
+export const getBillingTextForWhatsApp = (billing) =>{
+  return `
+  Here is your sample order billing:%0a
+
+      Base Charge      : ${billing.baseCharge}%0a
+      Promo Discount: ${billing.promoDiscount}%0a
+      Extra Discount   : ${billing.extraDiscount}%0a
+      Toll Tax               : ${billing.tollTax}%0a
+      Road Tax           : ${billing.roadTax}%0a
+      Additional         : ${billing.additional}%0a
+      Total                  : ${billing.baseCharge - billing.promoDiscount - billing.extraDiscount + billing.tollTax + billing.roadTax + billing. additional}%0a
+
+      %0a%0a
+  यह है आपका सैंपल ऑर्डर बिलिंग:%0a
+
+      बेस चार्ज             : ${billing.baseCharge}%0a
+      प्रोमो डिस्काउंट    : ${billing.promoDiscount}%0a
+      एक्स्ट्रा डिस्काउंट  : ${billing.extraDiscount}%0a
+      टोल टैक्स            : ${billing.tollTax}%0a
+      रोड टैक्स            : ${billing.roadTax}%0a
+      इत्यादि               : ${billing.additional}%0a
+      टोटल                 : ${billing.baseCharge - billing.promoDiscount - billing.extraDiscount + billing.tollTax + billing.roadTax + billing. additional}%0a
+
+      %0a%0a
+      (All values are in ₹)
+  `
+} 
+
+export const openInNewTab = (url) => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+  if (newWindow) newWindow.opener = null
 }

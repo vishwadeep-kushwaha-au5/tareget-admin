@@ -107,6 +107,9 @@ export default function Search({ handleInputChange, address, validation, name, s
     } = usePlacesAutocomplete({
         requestOptions: {
             /* Define search scope here */
+            componentRestrictions: {
+                country: 'in'
+            }
         },
         debounce: 300,
     });

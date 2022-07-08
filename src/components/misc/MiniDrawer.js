@@ -9,6 +9,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -148,7 +150,7 @@ export default function MiniDrawer({children}) {
         </div>
         <List>
             <ListItem button key={"Home"} onClick={()=>setDetailsSectionShow("Home")}>
-              <ListItemIcon><MailIcon /></ListItemIcon>
+              <ListItemIcon><DashboardIcon /></ListItemIcon>
               <ListItemText primary={"Home"} />
             </ListItem>
         </List>

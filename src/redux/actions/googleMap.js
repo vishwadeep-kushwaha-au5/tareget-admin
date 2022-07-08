@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../utils/api';
 import { isLoading, success, error } from './status';
 
 export const SET_MAP_LOADED = "SET_MAP_LOADED"

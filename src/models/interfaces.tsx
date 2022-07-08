@@ -4,7 +4,7 @@ export interface OrderRow {
   originAddress: string,
   destinationAddress: string,
   customerPhoneNumber: number,
-  destionationPhoneNumber:  number,
+  destinationPhoneNumber:  number,
   distance: number,
   baseCharge: number,
   deliveryPartner:  number,
