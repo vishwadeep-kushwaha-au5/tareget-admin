@@ -46,7 +46,6 @@
 // }
 
 export const baseChargeCalculate = (distance, chargeMultiplier) => {
-    console.log(chargeMultiplier)
     if(!distance)
         return {} //return empty object so that on validation this will through error
     return (((53.7239 - (5.9351*Math.log(parseFloat(distance))))*parseFloat(distance))/ chargeMultiplier)

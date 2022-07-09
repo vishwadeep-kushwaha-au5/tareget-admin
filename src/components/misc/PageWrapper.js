@@ -26,7 +26,6 @@ const Wrapper = (props) => {
 
     return (
         <div className={classes.main}>
-            {console.log(Boolean(user))}
             {user?
             <MiniDrawer>
                 {detailsSectionShow=>

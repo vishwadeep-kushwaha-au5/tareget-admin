@@ -3,14 +3,20 @@ import {Grid, TextField, Button} from '@material-ui/core'
 import DataGrid from 'react-data-grid';
 
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom';
+
 import { IRootState } from '../../redux/store';
 import { getAllOrders } from '../../redux/actions/deliveryOrder';
 import { OrderRow } from '../../models/interfaces';
 import { restructureOrderForDataGrid } from '../../utils/helper'
 import moment from 'moment';
 
-const columns = (openSelectionDialog: any, setListKey :any, setParentId :any) => [
-    { key: 'id', name: 'ID', width: 120, resizable: true, sortable: true, frozen: true },
+const columns = (openSelectionDialog: any, setListKey :any, setParentId :any, openOrder: any) => [
+    { key: 'id', name: 'ID', width: 120, resizable: true, sortable: true, frozen: true, 
+      formatter(props: any) {
+        return <span style={{cursor: "pointer"}} onClick={()=>openOrder(props?.row?.id)}>{props?.row?.id}</span>
+      }
+    },
     { key: 'customerName', name: 'Customer Name', width: 120, resizable: true, frozen: true },
     { key: 'originAddress', name: 'From', width: 120, resizable: true },
     { key: 'destinationAddress', name: 'To', width: 120, resizable: true },
@@ -18,7 +24,7 @@ const columns = (openSelectionDialog: any, setListKey :any, setParentId :any) =>
     { key: 'destinationPhoneNumber', name: 'destination Contact', width: 120, resizable: true },
     { key: 'distance', name: 'Distance', width: 120, resizable: true },
     { key: 'charge', name: 'Charge', width: 120, resizable: true },
-    { key: 'paymenyDone', name: 'Paid', width: 120, resizable: true },
+    { key: 'paymentDone', name: 'Paid', width: 120, resizable: true },
     { key: 'timerW', name: 'Timer W.', width: 120, resizable: true },
     { key: 'orderStatus', name: 'Order Status', width: 120, resizable: true },
     { key: 'deliveryPartnerId', name: 'Delivery Partner', width: 120, resizable: true,
@@ -57,7 +63,10 @@ const Orders = (props: any) => {
   const {setSelectionDialogOpen,  setListKey, setParentId, ...other} = props
   const [rows, setRows] =useState<any>([])
   const dispatch = useDispatch()
+  const history = useHistory();
+  
   const orders = useSelector((state: IRootState)=> state.deliveryOrder.orderList)
+  const openOrder = useCallback((orderId: string) => history.push(`/viewOrder/${orderId}`), [history]);
 
   useEffect(()=>{
     dispatch(getAllOrders())
@@ -69,7 +78,7 @@ const Orders = (props: any) => {
   },[orders])
 
   return (<DataGrid
-      columns={columns(setSelectionDialogOpen, setListKey, setParentId)}
+      columns={columns(setSelectionDialogOpen, setListKey, setParentId, openOrder)}
       rows={rows}
       rowKeyGetter={rowKeyGetter}
       rowHeight={30}

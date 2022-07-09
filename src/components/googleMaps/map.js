@@ -399,7 +399,7 @@ export default function GooglePlannerMap({ viewOnly, dimensions, markers = {}, s
                 options={mapOptions}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
-            >{console.log("bam",markers)}
+            >
                 {
                     Object.values(markers).map((place, i) =>
                         <Marker

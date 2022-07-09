@@ -115,7 +115,6 @@ export default function SelectionDialog(props) {
   useEffect(()=>{
     switch(props.listKey){
         case "driver":
-            console.log("HHHHH")
             dispatch(getAvailableDrivers());
             return
         case "vehicle":

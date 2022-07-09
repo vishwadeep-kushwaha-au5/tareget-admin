@@ -99,6 +99,12 @@ const INITIAL_STATE = {
             validation: false,
             required: true
         },
+        referenceCommission: {
+            value: 0, 
+            validationType: "validateNumber",
+            validation: false,
+            required: false
+        },
         deliveryStartTime: {
             value: null, 
             validationType: "validateDateTime",

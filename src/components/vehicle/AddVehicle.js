@@ -32,7 +32,6 @@ const AddDriver = ()=>{
     }
 
     const handleVehicleModelChange = (x, value)=>{
-        // console.log(value)
         handleInputChange({target: {name: 'vehicleModelId', value: value.id}})
     }
     
@@ -44,7 +43,6 @@ const AddDriver = ()=>{
 
     return(
         <Grid container className={classes.formWrapper} spacing={2} justifyContent="center">
-            {console.log(submitVehicleFlag)}
             <Typography variant="h5">Add Vehicle:</Typography>
             {!submitVehicleFlag?<><Grid item xs={12}>
                 <TextField label="Owner Name" variant="outlined" size="small" onChange={handleInputChange} name="ownerName" value={vehicle.ownerName.value} error={showError && vehicle.ownerName.validation} helperText={<>{vehicle.ownerName.validation}</>}/>

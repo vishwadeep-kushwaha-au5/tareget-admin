@@ -179,10 +179,21 @@ const ViewOrder = (props: any) =>{
                                 </Grid>
                                 <Grid item xs={12}><Divider className={classes.divider}/></Grid>
                             </Grid>
+                            {toggleNumber===3?
+                            <Grid item xs={12}>
+                                <EditReference toggleEdit={() => toggleEdit(3)}/>
+                            </Grid>:
                             <Grid container item xs={12}>
-                                <Grid item xs={4}><Typography variant="h6">R. Phonne: </Typography></Grid>
-                                <Grid item xs={8}><Typography variant="subtitle1" align="right">{order.referencePhoneNumber}</Typography></Grid>
+                                <Grid container item xs={12}>
+                                    <Grid item xs={4}><Typography variant="h6">R. Commission: </Typography></Grid>
+                                    <Grid item xs={8}><Typography variant="subtitle1" align="right" color="error">{order.referenceCommission && ` - ${order.referenceCommission}`}</Typography></Grid>
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <Grid item xs={4}><Typography variant="h6">R. Phonne: </Typography></Grid>
+                                    <Grid item xs={8}><Typography variant="subtitle1" align="right">{order.referencePhoneNumber}</Typography></Grid>
+                                </Grid>
                             </Grid>
+                            }
                         </Card>
                     </Grid>
                 </Grid>
@@ -219,7 +230,6 @@ const EditOrder = (props: any) =>{
         setShowError(true)
         let newdeliveryOrderState = (({customerName, customerPhoneNumber, destinationPhoneNumber})=> ({customerName, customerPhoneNumber, destinationPhoneNumber}))(deliveryOrderState);
         let x = dispatch(updateOrder("order",newdeliveryOrderState, order._id))
-        props.toggleEdit()
     }
 
     useEffect(()=>{
@@ -265,7 +275,6 @@ const EditBilling = (props: any) =>{
         setShowError(true)
         let newdeliveryOrderState = (({promoDiscount, extraDiscount, tollTax, roadTax, additional})=> ({promoDiscount, extraDiscount, tollTax, roadTax, additional}))(deliveryOrderState);
         dispatch(updateOrder("billing",newdeliveryOrderState, order._id))
-        props.toggleEdit()
     }
 
     useEffect(()=>{
@@ -289,6 +298,48 @@ const EditBilling = (props: any) =>{
         </Grid>
         <Grid item xs={12}>
             <TextField label="Additional" type='number' variant="outlined" size="small"  className={classes.textBox} onChange={handleInputChange} name="additional" value={deliveryOrderState.additional.value.toString()}  error={showError && deliveryOrderState.additional.validation} helperText={showError && <>{deliveryOrderState.additional.validation}</>}/>
+        </Grid>
+        <Grid container item xs={12} justifyContent="flex-end">
+            <Grid item><Button size="small" variant="outlined" className={classes.smallButton} onClick={props.toggleEdit}>Cancel</Button></Grid>
+            <Grid item><Button size="small" className={classes.smallButton} onClick={onSubmit}>Save</Button></Grid>
+        </Grid>
+    </Grid>
+}
+
+const EditReference = (props: any) =>{
+    const deliveryOrderState = useSelector((state: IRootState)=> state.deliveryOrder.orderForm)
+    const order = useSelector((state: IRootState)=> state.deliveryOrder.order)
+
+    const changeableOrderFields = ["referencePhoneNumber", "referenceCommission"]
+    const [showError, setShowError]= useState(false)
+    const dispatch = useDispatch()
+    const classes = useStyles()
+
+    const handleInputChange = (input: IInput) =>{
+        let key = input.target.name
+        let value = input.target.type==="number"?parseInt(input.target.value):input.target.value //doing this because material ui input return values in string format. This needs to be improved by making a seperate component for textfield input and handling parseInt in that component
+        dispatch(updateOrderField(input.target.name,{...deliveryOrderState[input.target.name as keyof typeof deliveryOrderState], value: value}))
+    }
+    
+    const onSubmit = () => {
+        //Todo: Fix 
+        setShowError(true)
+        let newdeliveryOrderState = (({referenceCommission, referencePhoneNumber})=> ({referenceCommission, referencePhoneNumber}))(deliveryOrderState);
+        dispatch(updateOrder("reference",newdeliveryOrderState, order._id))
+    }
+
+    useEffect(()=>{
+        changeableOrderFields.forEach(fieldName=>{
+            dispatch(updateOrderField(fieldName,{...deliveryOrderState[fieldName as keyof typeof deliveryOrderState], value: order[fieldName]}))
+        })
+    },[])
+
+    return <Grid container item xs={12}>
+        <Grid item xs={12}>
+            <TextField label="Commission" type='number' variant="outlined" size="small"  className={classes.textBox} onChange={handleInputChange} name="referenceCommission" value={deliveryOrderState.referenceCommission.value.toString()}  error={showError && deliveryOrderState.referenceCommission.validation} helperText={showError && <>{deliveryOrderState.referenceCommission.validation}</>}/>
+        </Grid>
+        <Grid item xs={12}>
+            <TextField fullWidth label="Reference Phone number" variant="outlined" size="small" className={classes.textBox} onChange={handleInputChange} name="referencePhoneNumber" value={deliveryOrderState.referencePhoneNumber.value}  error={showError && deliveryOrderState.referencePhoneNumber.validation} helperText={showError && <>{deliveryOrderState.referencePhoneNumber.validation}</>}/>
         </Grid>
         <Grid container item xs={12} justifyContent="flex-end">
             <Grid item><Button size="small" variant="outlined" className={classes.smallButton} onClick={props.toggleEdit}>Cancel</Button></Grid>

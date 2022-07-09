@@ -11,7 +11,6 @@ export const SET_SUBMIT_DRIVER_FLAG = "SET_SUBMIT_DRIVER_FLAG"
 
 
 export const updateDriverField = (inputName, input) => (dispatch, getState) => {
-    console.log(input)
     let validationType = input.validationType
     if(input.required && Object.getPrototypeOf(input) !== Object.prototype){
         //check if empty

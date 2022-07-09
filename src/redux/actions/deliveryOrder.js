@@ -15,7 +15,6 @@ export const UPDATE_NUMBER_OF_ORDER_BY_USER = "UPDATE_NUMBER_OF_ORDER_BY_USER"
 
 
 export const updateOrderField = (inputName, input) => (dispatch, getState) => {
-    console.log(input)
     let validationType = input.validationType
     if(input.required && Object.getPrototypeOf(input) !== Object.prototype){
         //check if empty
