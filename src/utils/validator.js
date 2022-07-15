@@ -36,7 +36,9 @@ class ValidateFields {
     }
 
     validatePhoneNumber(phone) {
-        if (validator.isMobilePhone(phone,'en-IN' , { StrictMode: true }))
+        if (!phone) //allow empty values
+            return false
+        if (validator.isMobilePhone(phone,'en-IN'))
             return false
         return "Please enter a valid phone number"
     }

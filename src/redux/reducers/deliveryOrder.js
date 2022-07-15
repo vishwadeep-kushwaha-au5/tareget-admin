@@ -39,37 +39,37 @@ const INITIAL_STATE = {
             required: true
         },
         baseCharge: {
-            value: '', 
+            value: 0, 
             validationType: "validateNumber",
             validation: true,
             required: true
         },
         extraDiscount: {
-            value: '',
+            value: 0,
             validationType: "validateNumber",
             validation: false,
             required: false
         },    
         promoDiscount: {
-            value: '',
+            value: 0,
             validationType: "validateNumber",
             validation: false,
             required: false
         },    
         tollTax: {
-            value: '',
+            value: 0,
             validationType: "validateNumber",
             validation: false,
             required: false
         },    
         roadTax: {
-            value: '',
+            value: 0,
             validationType: "validateNumber",
             validation: false,
             required: false
         },    
         additional: {
-            value: '',
+            value: 0,
             validationType: "validateNumber",
             validation: false,
             required: false
@@ -77,7 +77,7 @@ const INITIAL_STATE = {
         referencePhoneNumber: {
             value: '',
             validationType: "validatePhoneNumber",
-            validation: true,
+            validation: false,
             required: false
         },
         timerW: {

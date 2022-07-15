@@ -145,13 +145,13 @@ const AddDelivery = (props)=>{
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <TextField label="Customer Phone number" variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
+                <TextField label="Customer Phone number" fullWidth variant="outlined" size="small" onChange={handleInputChange} name="customerPhoneNumber" value={deliveryOrderState.customerPhoneNumber.value}  error={showError && deliveryOrderState.customerPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.customerPhoneNumber.validation}</>}/>
             </Grid>
             <Grid item xs={12}>
-                <TextField label="Destination Phone number" variant="outlined" size="small" onChange={handleInputChange} name="destinationPhoneNumber" value={deliveryOrderState.destinationPhoneNumber.value}  error={showError && deliveryOrderState.destinationPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.destinationPhoneNumber.validation}</>}/>
+                <TextField label="Destination Phone number" fullWidth variant="outlined" size="small" onChange={handleInputChange} name="destinationPhoneNumber" value={deliveryOrderState.destinationPhoneNumber.value}  error={showError && deliveryOrderState.destinationPhoneNumber.validation} helperText={showError && <>{deliveryOrderState.destinationPhoneNumber.validation}</>}/>
             </Grid>
             <Grid item xs={12}>
-                <TextField label="Timer W" type='number' variant="outlined" size="small" onChange={handleInputChange} name="timerW" value={deliveryOrderState.timerW.value.toString()}  error={showError && deliveryOrderState.timerW.validation} helperText={showError && <>{deliveryOrderState.timerW.validation}</>}/>
+                <TextField label="Timer W" type='number' fullWidth variant="outlined" size="small" onChange={handleInputChange} name="timerW" value={deliveryOrderState.timerW.value.toString()}  error={showError && deliveryOrderState.timerW.validation} helperText={showError && <>{deliveryOrderState.timerW.validation}</>}/>
             </Grid>
             <Grid container item xs={12}>
                 <Grid item>

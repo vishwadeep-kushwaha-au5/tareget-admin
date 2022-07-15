@@ -131,7 +131,7 @@ export const orderStatusToText = (orderStatus) =>{
         return "Vehicle reached at destination point";
         break;
       case '5':
-        return "Oehicle left at destination point";
+        return "Vehicle left at destination point";
         break;
       default:
         break;
